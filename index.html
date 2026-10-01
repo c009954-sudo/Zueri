@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Daily Spark — Random Idea Generator</title>
+  <style>
+    :root { color-scheme: dark; --bg:#101827; --panel:#1b2638; --accent:#9bf6d1; --muted:#aab6c8; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; font-family:system-ui,-apple-system,Segoe UI,sans-serif; color:#f5f7fb; background:radial-gradient(circle at top right,#293e59 0,transparent 42%),var(--bg); }
+    main { width:min(680px,100%); background:rgba(27,38,56,.92); border:1px solid #34445c; border-radius:28px; padding:clamp(24px,6vw,48px); box-shadow:0 24px 80px #0005; }
+    .tag { color:var(--accent); font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; font-weight:800; }
+    h1 { font-size:clamp(2.3rem,8vw,4rem); line-height:1; margin:16px 0; letter-spacing:-.06em; }
+    p { color:var(--muted); line-height:1.65; }
+    .idea { min-height:150px; display:grid; align-content:center; margin:28px 0; padding:26px; border-radius:20px; background:#111b2a; border:1px solid #34445c; }
+    #ideaTitle { font-size:1.55rem; font-weight:750; margin:0 0 10px; }
+    #ideaText { margin:0; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; }
+    button { cursor:pointer; border:0; border-radius:999px; padding:14px 20px; font:inherit; font-weight:750; }
+    .primary { color:#10231e; background:var(--accent); }
+    .secondary { color:#f5f7fb; background:#34445c; }
+    button:focus-visible { outline:3px solid white; outline-offset:3px; }
+    footer { margin-top:26px; font-size:.85rem; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="tag">✦ A little inspiration</div>
+    <h1>Daily Spark</h1>
+    <p>One click. One fresh idea. Pick something small and make today interesting.</p>
+    <section class="idea" aria-live="polite">
+      <div id="ideaTitle">Your next spark is waiting</div>
+      <p id="ideaText">Tap the button to discover a random mini-project, challenge, or creative prompt.</p>
+    </section>
+    <div class="actions">
+      <button class="primary" id="newIdea">Give me an idea ↗</button>
+      <button class="secondary" id="copyIdea">Copy idea</button>
+    </div>
+    <footer>Made for curious minds · No account, tracking, or setup required.</footer>
+  </main>
+  <script>
+    const ideas = [
+      ["Photo scavenger hunt", "Take five photos of things that share a colour. Arrange them into a tiny visual story."],
+      ["Build a tiny website", "Create a one-page site about a hobby, a favourite place, or a fictional planet."],
+      ["The 20-minute reset", "Choose one small space and make it calmer, cleaner, or more useful in twenty minutes."],
+      ["Invent a useful tool", "Sketch an app that solves one everyday annoyance. Keep it to three features."],
+      ["Learn a new shortcut", "Find one keyboard shortcut you don't know and use it all day."],
+      ["Sound map", "Spend five quiet minutes noticing nearby sounds, then write down the scene they create."],
+      ["Random recipe remix", "Choose three ingredients you already have and invent a snack combination."],
+      ["Explain it simply", "Pick something you know well and explain it in five sentences for a beginner."],
+      ["Mini kindness mission", "Send someone a specific, genuine thank-you for something they did."],
+      ["Design a fictional flag", "Make a flag for an imaginary city using only three colours and two symbols."],
+      ["Walk a new route", "Take a safe, familiar walk in a different direction and notice three new details."],
+      ["One-page game", "Design a simple guessing game with a clear goal and a rule that makes it surprising."]
+    ];
+    let last = -1;
+    function generateIdea() {
+      let index;
+      do { index = Math.floor(Math.random() * ideas.length); } while (ideas.length > 1 && index === last);
+      last = index;
+      document.querySelector("#ideaTitle").textContent = ideas[index][0];
+      document.querySelector("#ideaText").textContent = ideas[index][1];
+    }
+    document.querySelector("#newIdea").addEventListener("click", generateIdea);
+    document.querySelector("#copyIdea").addEventListener("click", async () => {
+      const text = document.querySelector("#ideaTitle").textContent + "\n" + document.querySelector("#ideaText").textContent;
+      const button = document.querySelector("#copyIdea");
+      try {
+        await navigator.clipboard.writeText(text);
+        button.textContent = "Copied ✓";
+        setTimeout(() => button.textContent = "Copy idea", 1400);
+      } catch {
+        button.textContent = "Select and copy the text";
+      }
+    });
+  </script>
+</body>
+</html>
